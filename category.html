@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Category</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #fdfdfd;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1, h2 {
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+            color: #2c3e50;
+        }
+        .book-section {
+            margin-bottom: 40px;
+        }
+        .book-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .book-item {
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .book-item h3 {
+            margin-top: 0;
+            color: #3498db;
+        }
+        .book-details {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .book-details li {
+            margin-bottom: 8px;
+        }
+        .book-details strong {
+            color: #555;
+        }
+        a {
+            color: #2980b9;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .home-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            background-color: #95a5a6;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <a href="index.html" class="home-link">&larr; Back to Home</a>
+        <div id="book-container">
+            <!-- Book section will be dynamically inserted here -->
+        </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('book-container');
+            const params = new URLSearchParams(window.location.search);
+            const category = params.get('cat');
+
+            if (!container || !category || !bookData[category]) {
+                if (container) container.innerHTML = '<h1>Category not found</h1>';
+                return;
+            }
+
+            document.title = category; // Set the page title
+            container.innerHTML = renderSection(category, bookData[category]);
+        });
+    </script>
+</body>
+</html>
