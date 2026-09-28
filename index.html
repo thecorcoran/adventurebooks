@@ -3,86 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Public Domain Adventure Books - Home</title>
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            line-height: 1.6;
-            margin: 0;
-            padding: 20px;
-            background-color: #fdfdfd;
-            color: #333;
-        }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            text-align: center;
-        }
-        h1 {
-            color: #2c3e50;
-        }
-        .nav-container {
-            margin-top: 40px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        .nav-button {
-            display: block;
-            padding: 15px 20px;
-            background-color: #3498db;
-            color: #ffffff;
-            text-decoration: none;
-            border-radius: 8px;
-            font-size: 18px;
-            transition: background-color 0.3s ease;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .nav-button:hover {
-            background-color: #2980b9;
-        }
-        .nav-button.all {
-            background-color: #2ecc71;
-        }
-        .nav-button.all:hover {
-            background-color: #27ae60;
-        }
-    </style>
+    <title>Alaska & Seafaring Adventures — Public Domain Library</title>
+    <link rel="stylesheet" href="tufte.css">
 </head>
 <body>
 
-    <div class="container">
-        <h1>Public Domain Adventure Books</h1>
-        <p>A curated list of classic public domain adventure stories for boys, available for free.</p>
-        <p>Please choose a category to explore or view the complete list.</p>
+    <main class="tufte-container">
+        <header>
+            <h1>Alaskan &amp; Seafaring Adventures</h1>
+            <p class="subtitle">A curated bibliography of classic public domain frontier sagas, polar expeditions, and nautical literature.</p>
+        </header>
 
-        <div id="nav-container" class="nav-container">
-            <!-- Navigation buttons will be inserted here -->
+        <div class="epigraph">
+            <blockquote>
+                &ldquo;There is an ecstasy that marks the summit of life, and beyond which life cannot rise. And such is the paradox of living, this ecstasy comes when one is most alive, and it comes as a complete forgetfulness that one is alive.&rdquo;
+            </blockquote>
+            <cite>&mdash; Jack London, <em>The Call of the Wild</em> (1903)</cite>
         </div>
-    </div>
+
+        <div class="epigraph" style="margin-top: -1rem;">
+            <blockquote>
+                &ldquo;Whenever I find myself growing grim about the mouth; whenever it is a damp, drizzly November in my soul... I account it high time to get to sea as soon as I can.&rdquo;
+            </blockquote>
+            <cite>&mdash; Herman Melville, <em>Moby-Dick; or, The Whale</em> (1851)</cite>
+        </div>
+
+        <section>
+            <h2>Table of Contents</h2>
+            <ul id="toc-list" class="toc-list">
+                <!-- Category entries dynamically rendered from bookData -->
+            </ul>
+        </section>
+
+        <div class="all-books-banner">
+            <div>
+                <strong>Complete Catalog</strong>
+                <div style="font-size: 0.9rem; color: var(--text-muted);">Browse and search all 45 volumes in a single index.</div>
+            </div>
+            <a href="all-books.html" class="button-link">View All Volumes &rarr;</a>
+        </div>
+
+        <footer class="colophon">
+            <p>All texts and audio recordings listed are preserved in the public domain and freely available via Project Gutenberg and LibriVox.</p>
+        </footer>
+    </main>
 
     <script src="data.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const navContainer = document.getElementById('nav-container');
-            if (!navContainer) return;
+            const tocList = document.getElementById('toc-list');
+            if (!tocList) return;
 
-            // Create buttons for each category
             for (const category in bookData) {
-                const button = document.createElement('a');
-                button.href = `category.html?cat=${encodeURIComponent(category)}`;
-                button.className = 'nav-button';
-                button.textContent = category;
-                navContainer.appendChild(button);
+                const section = bookData[category];
+                const count = section.books.length;
+                const item = document.createElement('li');
+                item.className = 'toc-item';
+                item.innerHTML = `
+                    <div class="toc-header">
+                        <span class="toc-title"><a href="category.html?cat=${encodeURIComponent(category)}">${category}</a></span>
+                        <span class="toc-count">${count} volumes</span>
+                    </div>
+                    <p class="toc-desc">${section.description}</p>
+                `;
+                tocList.appendChild(item);
             }
-
-            // Create the "View All" button
-            const viewAllButton = document.createElement('a');
-            viewAllButton.href = 'all-books.html';
-            viewAllButton.className = 'nav-button all';
-            viewAllButton.textContent = 'View All Books';
-            navContainer.appendChild(viewAllButton);
         });
     </script>
 

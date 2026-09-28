@@ -3,129 +3,88 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>All Public Domain Adventure Books</title>
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            line-height: 1.6;
-            margin: 0;
-            padding: 20px;
-            background-color: #fdfdfd;
-            color: #333;
-        }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        .search-container {
-            margin-bottom: 30px;
-        }
-        #searchInput {
-            width: 100%;
-            padding: 12px 15px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            box-sizing: border-box;
-            font-size: 16px;
-            transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-        }
-        h1, h2 {
-            border-bottom: 2px solid #eee;
-            padding-bottom: 10px;
-            color: #2c3e50;
-        }
-        .book-section {
-            margin-bottom: 40px;
-        }
-        .book-list {
-            list-style-type: none;
-            padding: 0;
-        }
-        .book-item {
-            background-color: #ffffff;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
-        .book-item h3 {
-            margin-top: 0;
-            color: #3498db;
-        }
-        .book-details {
-            list-style-type: none;
-            padding-left: 0;
-        }
-        .book-details li {
-            margin-bottom: 8px;
-        }
-        .book-details strong {
-            color: #555;
-        }
-        a {
-            color: #2980b9;
-            text-decoration: none;
-        }
-        a:hover {
-            text-decoration: underline;
-        }
-        .home-link {
-            display: inline-block;
-            margin-bottom: 20px;
-            background-color: #95a5a6;
-            color: white;
-            padding: 10px 15px;
-            border-radius: 5px;
-        }
-    </style>
+    <title>Complete Catalog — Alaskan & Seafaring Adventures</title>
+    <link rel="stylesheet" href="tufte.css">
 </head>
 <body>
 
-    <div class="container">
-        <a href="index.html" class="home-link">&larr; Back to Home</a>
-        <h1>All Public Domain Adventure Books</h1>
-        <p>A curated list of classic public domain adventure stories for boys, available for free.</p>
+    <main class="tufte-container">
+        <nav>
+            <a href="index.html" class="nav-back">&larr; Return to Library Index</a>
+        </nav>
 
-        <div class="search-container">
-            <input type="text" id="searchInput" placeholder="Search for books by title...">
+        <header>
+            <h1>Complete Catalog of Volumes</h1>
+            <p class="subtitle">The full index of public domain Alaskan wilderness chronicles, seafaring voyages, and polar expeditions.</p>
+        </header>
+
+        <div class="search-wrapper">
+            <div class="search-input-group">
+                <label for="searchInput" class="search-label">Filter Catalog:</label>
+                <input type="text" id="searchInput" class="search-field" placeholder="Search by title, author, or keyword..." autocomplete="off">
+            </div>
+            <div id="searchMeta" class="search-meta"></div>
         </div>
 
         <div id="book-container">
-            <!-- Book sections will be dynamically inserted here -->
+            <!-- Book sections dynamically inserted here -->
         </div>
 
-    </div>
+        <footer class="colophon">
+            <p>All works cataloged herein reside in the public domain. Texts provided by Project Gutenberg; audiobooks by LibriVox volunteers.</p>
+        </footer>
+    </main>
 
     <script src="data.js"></script>
     <script src="app.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Render all content
             const container = document.getElementById('book-container');
+            const searchInput = document.getElementById('searchInput');
+            const searchMeta = document.getElementById('searchMeta');
             if (!container) return;
 
+            // Render all sections
             let allSectionsHTML = '';
+            let totalBooks = 0;
             for (const category in bookData) {
                 allSectionsHTML += renderSection(category, bookData[category]);
+                totalBooks += bookData[category].books.length;
             }
             container.innerHTML = allSectionsHTML;
+            if (searchMeta) {
+                searchMeta.textContent = `Displaying ${totalBooks} total volumes across ${Object.keys(bookData).length} categories.`;
+            }
 
-            // Search functionality
-            document.getElementById('searchInput').addEventListener('input', function() {
-                const filter = this.value.toUpperCase();
-                document.querySelectorAll('.book-section').forEach(section => {
-                    let visibleBooksInSection = 0;
-                    section.querySelectorAll('.book-item').forEach(item => {
-                        const title = item.querySelector('h3').textContent.toUpperCase();
-                        const isVisible = title.includes(filter);
-                        item.style.display = isVisible ? '' : 'none';
-                        if (isVisible) visibleBooksInSection++;
+            // Real-time catalog filtering
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    const query = this.value.trim().toLowerCase();
+                    let matchedCount = 0;
+
+                    document.querySelectorAll('.book-section').forEach(section => {
+                        let visibleInSection = 0;
+                        section.querySelectorAll('.book-entry').forEach(item => {
+                            const text = item.textContent.toLowerCase();
+                            const isMatch = text.includes(query);
+                            item.style.display = isMatch ? '' : 'none';
+                            if (isMatch) {
+                                visibleInSection++;
+                                matchedCount++;
+                            }
+                        });
+                        section.style.display = visibleInSection > 0 ? '' : 'none';
                     });
-                    section.style.display = visibleBooksInSection > 0 ? '' : 'none';
+
+                    if (searchMeta) {
+                        if (query === '') {
+                            searchMeta.textContent = `Displaying ${totalBooks} total volumes across ${Object.keys(bookData).length} categories.`;
+                        } else {
+                            searchMeta.textContent = `Found ${matchedCount} matching volume${matchedCount === 1 ? '' : 's'}.`;
+                        }
+                    }
                 });
-            });
+            }
         });
     </script>
 </body>
